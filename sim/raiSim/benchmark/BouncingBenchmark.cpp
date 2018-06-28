@@ -37,18 +37,22 @@ void setupWorld() {
   sim->updateMaterialProp(materials);
 
   // add objects
-  auto checkerboard = sim->addCheckerboard(5.0, 100.0, 100.0, 0.1, 1, -1, rai_sim::GRID);
+  auto checkerboard = sim->addCheckerboard(5.0, 100.0, 100.0, 0.1, 1, -1);
+  std::vector<float> spec = {0.0, 0.0, 0.0}, amb = {5.0, 5.0, 5.0}, diff = {0.0,0.0,0.0};
+  checkerboard.visual()[0]->setLightProp(amb, diff, spec, 0.2);
   checkerboard->setMaterial(sim->getMaterialKey("ground"));
 
   for(int i = 0; i < benchmark::bouncing::params.n; i++) {
     for(int j = 0; j < benchmark::bouncing::params.n; j++) {
       auto ball = sim->addSphere(benchmark::bouncing::params.R, benchmark::bouncing::params.m);
-      ball->setPosition(i * 2.0, j * 2.0, benchmark::bouncing::params.H);
+      ball->setPosition(i * 2.0,
+                        (j - benchmark::bouncing::params.n/2) * 2.0,
+                        benchmark::bouncing::params.H);
       ball->setMaterial(sim->getMaterialKey("ball"));
 
-      if(benchmark::bouncing::options.gui)
-        ball.visual()[0]->setColor({0.5373, 0.6471, 0.3059});
-
+      if (benchmark::bouncing::options.gui) {
+        ball.visual()[0]->setColor({1, 0, 0});
+      }
       objList.push_back(ball);
     }
   }
@@ -60,7 +64,7 @@ void setupWorld() {
     sim->setLightPosition((float)benchmark::bouncing::params.lightPosition[0],
                           (float)benchmark::bouncing::params.lightPosition[1],
                           (float)benchmark::bouncing::params.lightPosition[2]);
-    sim->cameraFollowObject(checkerboard, {10, 0, 10});
+    sim->cameraFollowObject(checkerboard, {16, 0, 3.5});
   }
 }
 
@@ -148,7 +152,7 @@ int main(int argc, const char* argv[]) {
                 << "mean error : " << error << std::endl
                 << "=======================" << std::endl
   )
-  
+
   delete sim;
   return 0;
 }

@@ -82,7 +82,9 @@ void setupWorld() {
   rai::RandomNumberGenerator<double> rand;
   rand.seed(benchmark::sixsixsix::params.randomSeed);
 
-  auto checkerboard = sim->addCheckerboard(5.0, 500.0, 500.0, 0.1, 1, -1, rai_sim::GRID);
+  auto checkerboard = sim->addCheckerboard(1.0, 500.0, 500.0, 0.1, 1, -1);
+  std::vector<float> spec = {0.0, 0.0, 0.0}, amb = {5.0, 5.0, 5.0}, diff = {0.0,0.0,0.0};
+  checkerboard.visual()[0]->setLightProp(amb, diff, spec, 0.2);
   checkerboard->setMaterial(sim->getMaterialKey("ground"));
 
   for(int i = 0; i < benchmark::sixsixsix::params.n; i++) {
@@ -111,19 +113,19 @@ void setupWorld() {
 
         if(benchmark::sixsixsix::options.gui) {
           if((i + j + k) % 3 == 0) {
-            obj.visual()[0]->setColor({0.5373,
-                                       0.6471,
-                                       0.3059});
+            obj.visual()[0]->setColor({1,
+                                       0,
+                                       0});
           }
           else if((i + j + k) % 3 == 1) {
-            obj.visual()[0]->setColor({0.5373,
-                                       0.6471,
-                                       0.3059});
+            obj.visual()[0]->setColor({0,
+                                       1,
+                                       0});
           }
           else if((i + j + k) % 3 == 2) {
-            obj.visual()[0]->setColor({0.5373,
-                                       0.6471,
-                                       0.3059});
+            obj.visual()[0]->setColor({0,
+                                       0,
+                                       1});
           }
         }
 
@@ -136,7 +138,7 @@ void setupWorld() {
     sim->setLightPosition((float)benchmark::sixsixsix::params.lightPosition[0],
                           (float)benchmark::sixsixsix::params.lightPosition[1],
                           (float)benchmark::sixsixsix::params.lightPosition[2]);
-    sim->cameraFollowObject(objList[objList.size() / 2], {0, 5, 2});
+    sim->cameraFollowObject(objList[objList.size() / 2], {0, 5, 1});
   }
 }
 
