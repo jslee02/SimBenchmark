@@ -40,14 +40,14 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
 ## yaml-cpp
-#find_package(YAML-CPP REQUIRED)
-#include_directories(${YAML_CPP_INCLUDE_DIR})
+find_package(YAML-CPP REQUIRED)
+include_directories(${YAML_CPP_INCLUDE_DIR})
 
 # local libs
 add_subdirectory(lib)
 include_directories(${BENCHMARK_LIB_DIR}/raiCommon/include)         # raiCommon
 include_directories(${BENCHMARK_LIB_DIR}/raiGraphics/include)       # raiGraphics
-include_directories(${BENCHMARK_LIB_DIR}/yaml-cpp/include)          # yaml-cpp
+#include_directories(${BENCHMARK_LIB_DIR}/yaml-cpp/include)          # yaml-cpp
 
 ## =========================== LINK ===========================
 set(BENCHMARK_LINK
