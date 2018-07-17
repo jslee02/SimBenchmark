@@ -25,10 +25,10 @@ void setupSimulation() {
 
 void setupWorld() {
 // add objects
-  auto checkerboard = sim->addArticulatedSystem(
-      benchmark::anymal::zerogravity::getBulletPlanePath(),
-      bullet_mb_sim::object::URDF
-  );
+//  auto checkerboard = sim->addArticulatedSystem(
+//      benchmark::anymal::zerogravity::getBulletPlanePath(),
+//      bullet_mb_sim::object::URDF
+//  );
 
   // ball
   auto ball = sim->addArticulatedSystem(
@@ -66,8 +66,10 @@ void setupWorld() {
 
   // mass
   benchmark::anymal::zerogravity::params.M = anymal->getTotalMass();
-  if(benchmark::anymal::zerogravity::options.gui)
-    sim->cameraFollowObject(checkerboard, {10.0, 0.0, 1.0});
+  if(benchmark::anymal::zerogravity::options.gui) {
+    sim->cameraFollowObject(ball, {10.0, 0.0, 1.0});
+    sim->setLightPosition(1, -10, 10);
+  }
 }
 
 double simulationLoop(bool timer = true, bool error = true) {

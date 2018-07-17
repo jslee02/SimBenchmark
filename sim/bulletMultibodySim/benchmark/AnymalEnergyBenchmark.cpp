@@ -57,8 +57,10 @@ void setupWorld() {
   benchmark::anymal::freedrop::params.F =
       benchmark::anymal::freedrop::params.M * (-benchmark::anymal::freedrop::params.g) * 2;
 
-  if(benchmark::anymal::freedrop::options.gui)
+  if(benchmark::anymal::freedrop::options.gui) {
     sim->cameraFollowObject(checkerboard, {25.0, 0.0, 7.0});
+    sim->setLightPosition(10.0, 0.0, 10.0);
+  }
 }
 
 double simulationLoop(bool timer = true, bool error = true) {
