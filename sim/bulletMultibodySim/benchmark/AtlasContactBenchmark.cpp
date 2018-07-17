@@ -66,17 +66,11 @@ double simulationLoop(bool timer, bool cntNumContact) {
   if(cntNumContact)
     benchmark::atlas::data.setN(int(benchmark::atlas::params.T / benchmark::atlas::params.dt));
 
-  // state variables
-  Eigen::VectorXd gc(robots[0]->getStateDimension());
-  Eigen::VectorXd gv(robots[0]->getDOF());
-  Eigen::VectorXd tau(robots[0]->getDOF());
-
   // timer start
   StopWatch watch;
   if(timer)
     watch.start();
 
-<<<<<<< HEAD
   for(int t = 0; t < int(benchmark::atlas::params.T / benchmark::atlas::params.dt); t++) {
     if(benchmark::atlas::options.gui && !sim->visualizerLoop(benchmark::atlas::params.dt))
       break;
@@ -92,43 +86,6 @@ double simulationLoop(bool timer, bool cntNumContact) {
           -benchmark::atlas::params.kp.tail(30).cwiseProduct(gc.tail(30))
               - benchmark::atlas::params.kd.cwiseProduct(gv).tail(30);
       robots[i]->setGeneralizedForce(tau);
-=======
-  if(benchmark::atlas::options.gui) {
-    // gui
-    while(sim->visualizerLoop(benchmark::atlas::params.dt)) {
-      for(int i = 0; i < robots.size(); i++) {
-        gc = robots[i]->getGeneralizedCoordinate();
-        gv = robots[i]->getGeneralizedVelocity();
-        tau.tail(30) =
-            -benchmark::atlas::params.kp.tail(30).cwiseProduct(gc.tail(30))
-                - benchmark::atlas::params.kd.cwiseProduct(gv).tail(30);
-        robots[i]->setGeneralizedForce(tau);
-      }
-      sim->integrate();
-      if(cntNumContact) benchmark::atlas::data.numContactList.push_back(sim->getWorldNumContacts());
-    }
-  } else {
-    // no gui
-    for(int t = 0; t < (int) (benchmark::atlas::params.T / benchmark::atlas::params.dt); t++) {
-      StopWatch watch2;
-      if(!timer)
-        watch2.start();
-      for(int i = 0; i < robots.size(); i++) {
-        gc = robots[i]->getGeneralizedCoordinate();
-        gv = robots[i]->getGeneralizedVelocity();
-        tau.tail(30) =
-            -benchmark::atlas::params.kp.tail(30).cwiseProduct(gc.tail(30))
-                - benchmark::atlas::params.kd.cwiseProduct(gv).tail(30);
-        robots[i]->setGeneralizedForce(tau);
-      }
-      RAIINFO(t)
-      sim->integrate();
-
-      if(cntNumContact) {
-        benchmark::atlas::data.numContactList.push_back(sim->getWorldNumContacts());
-        benchmark::atlas::data.timeList.push_back(watch2.measure() * 1000.0);
-      }
->>>>>>> origin/atlas-bug-fix
     }
     sim->integrate();
     if(cntNumContact) benchmark::atlas::data.numContactList.push_back(sim->getWorldNumContacts());
@@ -162,7 +119,8 @@ int main(int argc, const char* argv[]) {
   // trial1: get Error
   setupSimulation();
   resetWorld();
-  double time =  simulationLoop(true, false);
+  simulationLoop(false, true);
+  double avgNumContacts = benchmark::atlas::data.computeAvgNumContact();
 
   // reset
   robots.clear();
@@ -171,10 +129,7 @@ int main(int argc, const char* argv[]) {
   // trial2: get CPU time
   setupSimulation();
   resetWorld();
-  simulationLoop(false, true);
-  double avgNumContacts = benchmark::atlas::data.computeAvgNumContact();
-  double avgStepTime = benchmark::atlas::data.averageStepTime();
-
+  double time = simulationLoop(true, false);
 
   // print to screen
   std::cout<<"time taken for "

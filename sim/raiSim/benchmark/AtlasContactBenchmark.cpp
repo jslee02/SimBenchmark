@@ -26,7 +26,9 @@ void setupSimulation() {
 }
 
 void resetWorld() {
-  auto checkerboard = sim->addCheckerboard(2, 100, 100, 0.1, -1, rai_sim::GRID);
+  auto checkerboard = sim->addCheckerboard(2, 100, 100, 0.1, -1);
+  std::vector<float> spec = {0.0, 0.0, 0.0}, amb = {5.0, 5.0, 5.0}, diff = {0.0,0.0,0.0};
+  checkerboard.visual()[0]->setLightProp(amb, diff, spec, 0.2);
 
   for(int i = 0; i < benchmark::atlas::options.numRow; i++) {
     for(int j = 0; j < benchmark::atlas::options.numRow; j++) {
@@ -55,8 +57,10 @@ void resetWorld() {
 
   sim->setGravity({0, 0, benchmark::atlas::params.g});
 
-  if(benchmark::atlas::options.gui)
-    sim->cameraFollowObject(checkerboard, {1.0, 1.0, 1.0});
+  if(benchmark::atlas::options.gui) {
+    sim->cameraFollowObject(checkerboard, {1.0, 0.0, 2.0});
+    sim->setLightPosition(10, 0, 10);
+  }
 }
 
 double simulationLoop(bool timer = true, bool cntNumContact = true) {

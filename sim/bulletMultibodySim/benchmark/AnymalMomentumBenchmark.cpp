@@ -14,7 +14,7 @@ po::options_description desc;
 
 void setupSimulation() {
   if(benchmark::anymal::zerogravity::options.gui)
-    sim = new bullet_mb_sim::BtMbSim(800, 600, 0.5, benchmark::NO_BACKGROUND);
+    sim = new bullet_mb_sim::BtMbSim(800, 600, 0.5);
   else
     sim = new bullet_mb_sim::BtMbSim();
 
