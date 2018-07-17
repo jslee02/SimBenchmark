@@ -32,7 +32,9 @@ void setupSimulation() {
 
 void setupWorld() {
   // add objects
-  auto checkerboard = sim->addCheckerboard(10.0, 400.0, 400.0, 0.1, bo::BOX_SHAPE, 1, -1, bo::GRID);
+  auto checkerboard = sim->addCheckerboard(10.0, 400.0, 400.0, 0.1, bo::BOX_SHAPE, 1, -1);
+  std::vector<float> spec = {0.0, 0.0, 0.0}, amb = {5.0, 5.0, 5.0}, diff = {0.0,0.0,0.0};
+  checkerboard.visual()[0]->setLightProp(amb, diff, spec, 0.2);
 
   // block size
   const float shortLen = benchmark::building::params.shortLen;
@@ -100,7 +102,7 @@ void setupWorld() {
     sim->setLightPosition((float)benchmark::building::params.lightPosition[0],
                           (float)benchmark::building::params.lightPosition[1],
                           (float)benchmark::building::params.lightPosition[2]);
-    sim->cameraFollowObject(objList[47], {0, 2, 0});
+    sim->cameraFollowObject(objList[47], {0, 1, 0});
   }
 }
 

@@ -4,6 +4,7 @@
 
 #include <raiSim/World_RG.hpp>
 #include <valarray>
+#include <common/interface/CheckerboardInterface.hpp>
 
 #include "RollingBenchmark.hpp"
 
@@ -49,8 +50,10 @@ void setupWorld() {
   sim->updateMaterialProp(materials);
 
   // add objects
-  auto checkerboard = sim->addCheckerboard(5.0, 100.0, 100.0, 0.1, -1, rai_sim::GRID);
+  auto checkerboard = sim->addCheckerboard(5.0, 100.0, 100.0, 0.1, 1, -1);
   checkerboard->setMaterial(sim->getMaterialKey("ground"));
+  std::vector<float> spec = {0.0, 0.0, 0.0}, amb = {5.0, 5.0, 5.0}, diff = {0.0,0.0,0.0};
+  checkerboard.visual()[0]->setLightProp(amb, diff, spec, 0.2);
 
   auto box = sim->addBox(20, 20, 1, 10);
   box->setPosition(0, 0, 0.5 - benchmark::rolling::params.initPenetration);
@@ -58,7 +61,7 @@ void setupWorld() {
   objList.push_back(box);
 
   if(benchmark::rolling::options.gui)
-    box.visual()[0]->setColor({0.5373, 0.6471, 0.3059});
+    box.visual()[0]->setColor({1, 0, 0});
 
   for(int i = 0; i < benchmark::rolling::params.n; i++) {
     for(int j = 0; j < benchmark::rolling::params.n; j++) {
@@ -69,8 +72,14 @@ void setupWorld() {
       ball->setMaterial(sim->getMaterialKey("ball"));
       objList.push_back(ball);
 
-      if(benchmark::rolling::options.gui)
-        ball.visual()[0]->setColor({0.5373, 0.6471, 0.3059});
+      if(benchmark::rolling::options.gui) {
+        if (objList.size() % 3 == 0)
+          ball.visual()[0]->setColor({1, 1, 0});
+        else if (objList.size() % 3 == 1)
+          ball.visual()[0]->setColor({1, 1, 0});
+        else if (objList.size() % 3 == 2)
+          ball.visual()[0]->setColor({1, 1, 0});
+      }
     }
   }
 
@@ -81,7 +90,7 @@ void setupWorld() {
     sim->setLightPosition((float)benchmark::rolling::params.lightPosition[0],
                           (float)benchmark::rolling::params.lightPosition[1],
                           (float)benchmark::rolling::params.lightPosition[2]);
-    sim->cameraFollowObject(checkerboard, {30, 0, 15});
+    sim->cameraFollowObject(checkerboard, {25, 0, 8});
   }
 }
 
