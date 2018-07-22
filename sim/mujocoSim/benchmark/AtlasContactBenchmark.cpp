@@ -30,6 +30,7 @@ void setupSimulation() {
 
   // time step
   sim->setTimeStep(benchmark::atlas::params.dt);
+  sim->setWarmStartFlag(true);
 }
 
 
@@ -87,13 +88,12 @@ double simulationLoop(bool timer = true, bool cntNumContact = true) {
     Eigen::VectorXd gc(sim->getStateDimension());
     Eigen::VectorXd gv(sim->getDOF());
     Eigen::VectorXd tau(sim->getDOF());
+    double torque = 40 * std::sin(t * benchmark::atlas::params.dt * 3.14);
     tau.setZero();
     gc = sim->getGeneralizedCoordinate();
     gv = sim->getGeneralizedVelocity();
     for (int i = 0; i < benchmark::atlas::options.numRow * benchmark::atlas::options.numRow; i++) {
-      tau.segment(i * 35 + 6, 29) =
-          -benchmark::atlas::params.kp.tail(29).cwiseProduct(gc.segment(i * 36 + 7, 29))
-              - benchmark::atlas::params.kd.tail(29).cwiseProduct(gv.segment(i * 35 + 6, 29));
+      tau.segment(i * 35 + 6, 29) = benchmark::atlas::params.kp.tail(29) * torque;
     }
     sim->setGeneralizedForce(tau);
     sim->integrate2();

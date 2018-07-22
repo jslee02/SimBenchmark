@@ -13,7 +13,7 @@ po::options_description desc;
 
 void setupSimulation() {
   if(benchmark::atlas::options.gui)
-    sim = new rai_sim::World_RG(800, 600, 0.1, rai_sim::NO_BACKGROUND);
+    sim = new rai_sim::World_RG(800, 600, 0.5, rai_sim::NO_BACKGROUND);
   else
     sim = new rai_sim::World_RG();
 
@@ -75,21 +75,26 @@ double simulationLoop(bool timer = true, bool cntNumContact = true) {
   gv.setZero();
 
   // no gui
+  StopWatch watch2;
   for(int t = 0; t < (int) (benchmark::atlas::params.T / benchmark::atlas::params.dt); t++) {
     if(benchmark::atlas::options.gui && !sim->visualizerLoop())
       break;
+
+    if (cntNumContact) watch2.start();
     sim->integrate1();
+    double torque = 40 * std::sin(t * benchmark::atlas::params.dt * 3.14);
     for(int i = 0; i < robots.size(); i++) {
       gc = robots[i]->getGeneralizedCoordinate();
       gv = robots[i]->getGeneralizedVelocity();
       tau.setZero();
-      tau.tail(29) =
-          -benchmark::atlas::params.kp.tail(29).cwiseProduct(gc.tail(29))
-              - benchmark::atlas::params.kd.cwiseProduct(gv).tail(29);
+      tau.tail(29) = benchmark::atlas::params.kp.tail(29) * torque;
       robots[i]->setGeneralizedForce(tau);
     }
     sim->integrate2();
-    if(cntNumContact) benchmark::atlas::data.numContactList.push_back(sim->getContactProblem().size());
+    if (cntNumContact) {
+      benchmark::atlas::data.numContactList.push_back(sim->getContactProblem().size());
+      benchmark::atlas::data.stepTimeList.push_back(watch2.measure());
+    }
   }
 
   double time = 0;
