@@ -63,16 +63,14 @@ double simulationLoop(bool timer = true, bool cntNumContact = true) {
   // resever error vector
   benchmark::atlas::data.setN(unsigned(benchmark::atlas::params.T / benchmark::atlas::params.dt));
 
-  // timer start
-  StopWatch watch;
-  if(timer)
-    watch.start();
-
   Eigen::VectorXd gc(robots[0]->getGeneralizedCoordinateDim());
   Eigen::VectorXd gv(robots[0]->getDOF());
   Eigen::VectorXd tau(robots[0]->getDOF());
   gc.setZero();
   gv.setZero();
+
+  StopWatch watch;
+  if(timer) watch.start();
 
   // no gui
   StopWatch watch2;
@@ -81,8 +79,9 @@ double simulationLoop(bool timer = true, bool cntNumContact = true) {
       break;
 
     if (cntNumContact) watch2.start();
-    sim->integrate1();
     double torque = 40 * std::sin(t * benchmark::atlas::params.dt * 3.14);
+
+    sim->integrate1();
     for(int i = 0; i < robots.size(); i++) {
       gc = robots[i]->getGeneralizedCoordinate();
       gv = robots[i]->getGeneralizedVelocity();
@@ -91,6 +90,7 @@ double simulationLoop(bool timer = true, bool cntNumContact = true) {
       robots[i]->setGeneralizedForce(tau);
     }
     sim->integrate2();
+
     if (cntNumContact) {
       benchmark::atlas::data.numContactList.push_back(sim->getContactProblem().size());
       benchmark::atlas::data.stepTimeList.push_back(watch2.measure());

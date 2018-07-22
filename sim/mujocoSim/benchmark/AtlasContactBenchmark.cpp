@@ -30,7 +30,7 @@ void setupSimulation() {
 
   // time step
   sim->setTimeStep(benchmark::atlas::params.dt);
-  sim->setWarmStartFlag(true);
+//  sim->setWarmStartFlag(true);
 }
 
 
@@ -72,23 +72,26 @@ double simulationLoop(bool timer = true, bool cntNumContact = true) {
   // resever error vector
   benchmark::atlas::data.setN(unsigned(benchmark::atlas::params.T / benchmark::atlas::params.dt));
 
+  Eigen::VectorXd gc(sim->getStateDimension());
+  Eigen::VectorXd gv(sim->getDOF());
+  Eigen::VectorXd tau(sim->getDOF());
+  gc.setZero();
+  gv.setZero();
+
   // timer start
   StopWatch watch;
   if(timer)
     watch.start();
 
-  // no gui
   StopWatch watch2;
   for (int t = 0; t < (int) (benchmark::atlas::params.T / benchmark::atlas::params.dt); t++) {
     if(benchmark::atlas::options.gui && !sim->visualizerLoop(benchmark::atlas::params.dt))
       break;
 
     if (cntNumContact) watch2.start();
-    sim->integrate1();
-    Eigen::VectorXd gc(sim->getStateDimension());
-    Eigen::VectorXd gv(sim->getDOF());
-    Eigen::VectorXd tau(sim->getDOF());
     double torque = 40 * std::sin(t * benchmark::atlas::params.dt * 3.14);
+
+    sim->integrate1();
     tau.setZero();
     gc = sim->getGeneralizedCoordinate();
     gv = sim->getGeneralizedVelocity();
@@ -97,6 +100,7 @@ double simulationLoop(bool timer = true, bool cntNumContact = true) {
     }
     sim->setGeneralizedForce(tau);
     sim->integrate2();
+
     if (cntNumContact) {
       benchmark::atlas::data.numContactList.push_back(sim->getWorldNumContacts());
       benchmark::atlas::data.stepTimeList.push_back(watch2.measure());

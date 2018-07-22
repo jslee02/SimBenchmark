@@ -66,29 +66,36 @@ double simulationLoop(bool timer, bool cntNumContact) {
   if(cntNumContact)
     benchmark::atlas::data.setN(int(benchmark::atlas::params.T / benchmark::atlas::params.dt));
 
-  // timer start
-  StopWatch watch;
-  if(timer)
-    watch.start();
+  Eigen::VectorXd gc(robots[0]->getStateDimension());
+  Eigen::VectorXd gv(robots[0]->getDOF());
+  Eigen::VectorXd tau(robots[0]->getDOF());
+  gc.setZero();
+  gv.setZero();
 
+  StopWatch watch;
+  if(timer) watch.start();
+
+  StopWatch watch2;
   for(int t = 0; t < int(benchmark::atlas::params.T / benchmark::atlas::params.dt); t++) {
     if(benchmark::atlas::options.gui && !sim->visualizerLoop(benchmark::atlas::params.dt))
       break;
 
+    if (cntNumContact) watch2.start();
+    double torque = 40 * std::sin(t * benchmark::atlas::params.dt * 3.14);
+
     for(int i = 0; i < robots.size(); i++) {
-      Eigen::VectorXd gc(robots[i]->getStateDimension());
-      Eigen::VectorXd gv(robots[i]->getDOF());
-      Eigen::VectorXd tau(robots[i]->getDOF());
       gc = robots[i]->getGeneralizedCoordinate();
       gv = robots[i]->getGeneralizedVelocity();
       tau.setZero();
-      tau.tail(30) =
-          -benchmark::atlas::params.kp.tail(30).cwiseProduct(gc.tail(30))
-              - benchmark::atlas::params.kd.cwiseProduct(gv).tail(30);
+      tau.tail(29) = benchmark::atlas::params.kp.tail(29) * torque;
       robots[i]->setGeneralizedForce(tau);
     }
+
     sim->integrate();
-    if(cntNumContact) benchmark::atlas::data.numContactList.push_back(sim->getWorldNumContacts());
+    if (cntNumContact) {
+      benchmark::atlas::data.numContactList.push_back(sim->getWorldNumContacts());
+      benchmark::atlas::data.stepTimeList.push_back(watch2.measure());
+    }
   }
 
   double time = 0;

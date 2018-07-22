@@ -54,7 +54,6 @@ struct Parameter {
   };
 
   Eigen::VectorXd kp;
-  Eigen::VectorXd kd;
 };
 Parameter params;
 
@@ -294,10 +293,8 @@ void getParamsFromYAML(const char *yamlfile, benchmark::Simulator simulator) {
   params.baseQuat[3] = constant["baseQuat"].as<std::vector<double >>()[3];
 
   params.kp.resize(35);
-  params.kd.resize(35);
   for(int i = 0; i < 35; i ++) {
     params.kp[i] = constant["kp"].as<std::vector<double>>()[i];
-    params.kd[i] = constant["kd"].as<std::vector<double>>()[i];
   }
 
   // solver parameters
