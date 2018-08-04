@@ -48,6 +48,7 @@ add_subdirectory(lib)
 include_directories(${BENCHMARK_LIB_DIR}/raiCommon/include)         # raiCommon
 include_directories(${BENCHMARK_LIB_DIR}/raiGraphics/include)       # raiGraphics
 include_directories(${BENCHMARK_LIB_DIR}/yaml-cpp/include)          # yaml-cpp
+link_libraries(${BENCHMARK_LIB_DIR}/yaml-cpp/libyaml-cpp.a)
 
 ## =========================== LINK ===========================
 set(BENCHMARK_LINK

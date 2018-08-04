@@ -1,4 +1,4 @@
-# SimBenchmark
+# SimBenchmark [![Build Status](https://travis-ci.com/jslee02/SimBenchmark.svg?branch=dart)](https://travis-ci.com/jslee02/SimBenchmark)
 
 SimBenchmark is a project providing the reliable benchmark results of state-of-the-art physics engines used for contact simulation for various robotic tasks.
 
