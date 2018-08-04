@@ -29,6 +29,20 @@ matrix:
         - BUILD_TYPE=Release
         - SUDO=sudo
       services: docker
+    - os: linux
+      env:
+        - BUILD_NAME=BIONIC_RELEASE
+        - DOCKER_FILE="ubuntu-bionic"
+        - BUILD_TYPE=Release
+        - SUDO=sudo
+      services: docker
+    - os: linux
+      env:
+        - BUILD_NAME=BIONIC_DEBUG
+        - DOCKER_FILE="ubuntu-bionic"
+        - BUILD_TYPE=Release
+        - SUDO=sudo
+      services: docker
 
 before_install:
   - if [ -n "$DOCKER_FILE" ]; then
