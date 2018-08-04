@@ -1,7 +1,9 @@
 #ifndef OBJ_LOADER_H_INCLUDED
 #define OBJ_LOADER_H_INCLUDED
 
-#include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/glm.hpp"
+#undef GLM_ENABLE_EXPERIMENTAL
 #include <vector>
 #include <string>
 #include "raiCommon/rai_utils.hpp"

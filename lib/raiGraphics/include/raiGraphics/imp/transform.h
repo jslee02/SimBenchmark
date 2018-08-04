@@ -1,9 +1,11 @@
 #ifndef TRANSFORM_INCLUDED_H
 #define TRANSFORM_INCLUDED_H
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
-#include "glm/gtx/quaternion.hpp"
+#include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/transform.hpp>
+#undef GLM_ENABLE_EXPERIMENTAL
 
 namespace rai_graphics {
 
