@@ -3,7 +3,6 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/glm.hpp"
-#undef GLM_ENABLE_EXPERIMENTAL
 #include <vector>
 #include <string>
 #include "raiCommon/rai_utils.hpp"

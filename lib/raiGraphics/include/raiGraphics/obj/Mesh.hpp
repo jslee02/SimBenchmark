@@ -6,7 +6,6 @@
 #include <GL/glew.h>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
-#undef GLM_ENABLE_EXPERIMENTAL
 #include <string>
 #include <vector>
 #include "raiGraphics/imp/obj_loader.h"

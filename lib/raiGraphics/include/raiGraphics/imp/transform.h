@@ -5,7 +5,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/transform.hpp>
-#undef GLM_ENABLE_EXPERIMENTAL
 
 namespace rai_graphics {
 
